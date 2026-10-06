@@ -1,15 +1,27 @@
-## Put comments here that give an overall description of what your
-## functions do
-
-## Write a short comment describing this function
-
+## Hàm tạo một đối tượng "ma trận" đặc biệt có khả năng lưu bộ nhớ đệm (cache) giá trị nghịch đảo của chính nó
 makeCacheMatrix <- function(x = matrix()) {
-
+        inv <- NULL
+        set <- function(y) {
+                x <<- y
+                inv <<- NULL
+        }
+        get <- function() x
+        setInverse <- function(inverse) inv <<- inverse
+        getInverse <- function() inv
+        list(set = set, get = get,
+             setInverse = setInverse,
+             getInverse = getInverse)
 }
 
-
-## Write a short comment describing this function
-
+## Hàm tính toán ma trận nghịch đảo. Nếu đã tính trước đó, hàm sẽ lấy kết quả từ bộ nhớ đệm ra thay vì tính lại
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+        inv <- x$getInverse()
+        if(!is.null(inv)) {
+                message("getting cached data")
+                return(inv)
+        }
+        data <- x$get()
+        inv <- solve(data, ...)
+        x$setInverse(inv)
+        inv
 }
